@@ -1,4 +1,5 @@
 from gi.repository import GdkPixbuf
+from constants import WALL_TILE, FLOOR_TILE, LIQUID_TILE
 
 bearings = [
         (( 0, -1), 10000000), # NORTH
@@ -14,19 +15,32 @@ bearings = [
 class TextureManager:
     def __init__(self, folder):
         self.folder = folder
-        self.cache = {0: {}, 1: {}}
+        self.cache = {LIQUID_TILE: {}, FLOOR_TILE: {}, WALL_TILE: {}}
 
     def getPixbuf(self, coords):
         tileid = 0
         for b in bearings:
-            if 0 in b[0] and coords[b[0]] == 1:
-                tileid += b[1]
-            else:
-                for i in [b[0], (b[0][0], 0), (0, b[0][1])]:
-                    if coords[i] != 1:
-                        break
-                else:
+            if coords[(0,0)] == FLOOR_TILE:
+                if coords[b[0]] > FLOOR_TILE:
                     tileid += b[1]
+                elif 0 in b[0]:
+                    continue
+                else:
+                    for i in [(b[0][0], 0), (0, b[0][1])]:
+                        if coords[i] > FLOOR_TILE:
+                            tileid += b[1]
+                            break
+            else:
+                if coords[b[0]] != coords[(0,0)]:
+                    continue
+                elif 0 in b[0]:
+                    tileid += b[1]
+                else:
+                    for i in [(b[0][0], 0), (0, b[0][1])]:
+                        if coords[i] != coords[(0,0)]:
+                            break
+                    else:
+                        tileid += b[1]
         tileid = str(tileid).zfill(8)
         return self.getFromCache(coords[(0,0)], tileid)
 

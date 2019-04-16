@@ -1,9 +1,19 @@
+#!/usr/bin/env python3
+
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 from gi.repository import Gdk, Gtk
 from renderer import Renderer
 from texturemanager import TextureManager
+from constants import TILE_TYPES
+
+def posmod(a, b):
+    result = a % b
+    if result < 0:
+        return result + b
+    else:
+        return result
 
 class MainWindow(Gtk.Window):
 
@@ -66,7 +76,7 @@ class MainWindow(Gtk.Window):
             try:
                 tileX, tileY = (int(e.x / 24), int(e.y / 24))
                 self.renderer.setTile(tileX, tileY,
-                        0 if self.renderer.getTile(tileX, tileY) == 1 else 1)
+                        posmod((self.renderer.getTile(tileX, tileY) - 1), TILE_TYPES))
                 self.img.set_from_pixbuf(self.renderer.getPixbuf())
             except KeyError:
                 pass

@@ -1,5 +1,6 @@
 from gi.repository import GdkPixbuf
 import itertools
+from constants import WALL_TILE
 
 class Renderer:
     def __init__(self, rhs, tilewidth, tileheight, texturemanager):
@@ -12,7 +13,7 @@ class Renderer:
             if rhs is not None and (x,y) in rhs.walls:
                 self.walls[(x,y)] = rhs.walls[(x,y)]
             else:
-                self.walls[(x,y)] = 1
+                self.walls[(x,y)] = WALL_TILE
         for (x,y) in itertools.product(range(tilewidth), range(tileheight)):
             self.update(x, y)
 
@@ -26,7 +27,7 @@ class Renderer:
         if (x,y) in self.walls:
             return self.walls[(x,y)]
         else:
-            return 1
+            return WALL_TILE
 
     def setTile(self, x, y, tile):
         self.walls[(x,y)] = tile
