@@ -30,6 +30,8 @@ class Renderer:
             return WALL_TILE
 
     def setTile(self, x, y, tile):
+        if (x, y) not in self.walls:
+            return
         self.walls[(x,y)] = tile
         for (i,j) in itertools.product(
                 range(max(0, x - 1), min(self.tilewidth, x + 2)),
